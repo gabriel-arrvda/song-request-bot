@@ -10,6 +10,7 @@ const globPromise = promisify(glob)
 export class Bot extends Client {
 
     public commands: Collection<string, Command> = new Collection()
+    public aliases: Collection<string, string> = new Collection()
     public events: Collection<string, Event> = new Collection()
     public config: Partial<Config> = {}
 
@@ -36,6 +37,10 @@ export class Bot extends Client {
         commandFiles.map( async (value: string) => {
             const file: Command = await import(value)
             this.commands.set(file.name, file)
+
+            if(file.aliases?.length){
+                file.aliases.map((value: string) => this.aliases.set(value, file.name))
+            }
         })
 
         const eventFiles: string[] = await globPromise(`${__dirname}/../events/**/*{.ts,.js}`)

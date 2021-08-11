@@ -9,7 +9,8 @@ export const run: RunFunction = async(client, message: Message) => {
 
     const args: string[] = message.content.slice('wf.'.length).trim().split(/ +/g)
     const cmd: string = args[0]
-    const command: Command | undefined = client.commands.get(cmd)
+    const alias: any = client.aliases.get(cmd)
+    const command: Command | undefined = client.commands.get(cmd) || client.commands.get(alias)
 
     if(!command) {
       return
